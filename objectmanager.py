@@ -172,6 +172,13 @@ def GetObject(name):
 
     return "Object didn't found in current context."
 
+def GetSession():
+    for i in current_objects:
+        if isinstance(i, Session):
+            return i
+        else:
+            continue
+
 def DeleteObject(name):
 
     for obj in current_json:
