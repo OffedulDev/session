@@ -5,39 +5,39 @@
  you just have to initialize it with a token and assign it to the default session object in flask, here's
  an example: </h5>
  
-> import objectmanager
-> from flask import Flask, session
+> import objectmanager <br>
+> from flask import Flask, session <br> <br>
 > 
-> app = Flask(__name__)
+> app = Flask(__name__) <br>
 >
 > @app.route("/")
-> def init():
-> 	   objectmanager.InitializeSession("your token goes here")
-> 	   session['session'] = objectmanager.GetSession()
+> def init(): <br>
+> 	   objectmanager.InitializeSession("your token goes here") <br>
+> 	   session['session'] = objectmanager.GetSession() <br>
 
 <h3> Add Object to Session </h3>
 <h4> Returns the created object </h4>
 
-> objectmanager.CreateObject("selection", "top", str)
-> objectmanager.CreateObject("selection", ["top", "left", "right"], list)
-> objectmanager.CreateObject("selection", 43, int)
-> objectmanager.CreateObject("selection", {"faces": ['top': false, 'right': false]}, tuple)
+> objectmanager.CreateObject("selection", "top", str) <br>
+> objectmanager.CreateObject("selection", ["top", "left", "right"], list) <br>
+> objectmanager.CreateObject("selection", 43, int) <br>
+> objectmanager.CreateObject("selection", {"faces": ['top': false, 'right': false]}, tuple) <br>
 
 <h3> Update Session </h3>
 
 <h5> Once you add an object to the session you must remember to update the session, to do so follow the following example: </h5>
 
-> objectmanager.UpdateSession()
-> session['session'] = objectmanager.GetSession()
+> objectmanager.UpdateSession() <br>
+> session['session'] = objectmanager.GetSession() <br>
 
 <h3> Print on file or convert Json to Session Object </h3>
 
 <h5> With PrintContentOnFile function you can write on a file the prettified json on a file, oh did I mention it? This plugin supports json! You can load objects with a json format, to do so, follow the example: </h5>
 
-> jsonExample = { 
-> "name": "selection",
-> "value": "top",
-> "type": "String"
-> }
-> obj = objectmanager.ConvertJsonToObject(jsonExample)
-> objectmanager.AddJson(obj)
+> jsonExample = { <br>
+> "name": "selection", <br>
+> "value": "top", <br>
+> "type": "String" <br>
+> } <br><br>
+> obj = objectmanager.ConvertJsonToObject(jsonExample) <br>
+> objectmanager.AddJson(obj) <br>
