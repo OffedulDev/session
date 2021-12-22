@@ -115,7 +115,7 @@ class UnknownObject:
             self.value = new_value
 # / Functions \ 
 
-def AddJsonToSession(_json):
+def ConvertJsonToObject(_json):
     if _json == None or _json == "": return
 
     try:
@@ -124,23 +124,23 @@ def AddJsonToSession(_json):
         if formattedObject['type'] == "Integer":
             obj = IntegerObject(formattedObject['name'], formattedObject['value'])
 
-            AddJson(obj)
+            return obj
         elif formattedObject['type'] == "String":
             obj = StringObject(formattedObject['name'], formattedObject['value'])
 
-            AddJson(obj)
+            return obj
         elif formattedObject['type'] == "Tuple":
             obj = TupleObject(formattedObject['name'], formattedObject['value'])
 
-            AddJson(obj)
+            return obj
         elif formattedObject['type'] == "List":
             obj = ListObject(formattedObject['name'], formattedObject['value'])
 
-            AddJson(obj)
+            return obj
         else:
             obj = UnknownObject(formattedObject['name'], formattedObject['value'])
 
-            AddJson(obj)
+            return obj
         
     except:
         return
@@ -158,7 +158,82 @@ def AddJson(object):
     current_json.append(jsonObject)
     current_item.append(formattedObject["name"])
 
-def updateSession():
+def GetObject(name):
+
+    for obj in current_json:
+
+        formattedObject = json.loads(obj)
+
+        if formattedObject['name'] == name:
+            return formattedObject['value']
+        else:
+            del formattedObject
+            continue
+
+    return "Object didn't found in current context."
+
+def DeleteObject(name):
+
+    for obj in current_json:
+
+        formattedObject = json.loads(obj)
+
+        if formattedObject['name'] == name:
+            current_item.pop(current_item.index(formattedObject['name']))
+            current_json.pop(current_json.index(obj))
+
+            return current_json
+        else:
+            del formattedObject
+            continue
+
+def PrintContentOnFile(filename):
+
+    if filename == "" or filename == None: return
+
+    try:
+        _file = open(filename + ".json", "a")
+        
+        for i in current_json:
+
+            unPrettified = json.loads(i)
+            prettified = json.dumps(unPrettified, indent=2)
+
+            _file.write("\n" + "\n" + prettified)
+    except:
+        return
+
+def CreateObject(name, value, _type):
+
+    # AddJson Function
+
+    if _type == int:
+        obj = IntegerObject(name, value)
+
+        AddJson(obj)
+        return obj
+    elif _type == str:
+        obj = StringObject(name, value)
+
+        AddJson(obj)
+        return obj
+    elif _type == tuple:
+        obj = TupleObject(name, value)
+
+        AddJson(obj)
+        return obj
+    elif _type == list:
+        obj = ListObject(name, value)
+
+        AddJson(obj)
+        return obj
+    else:
+        obj = UnknownObject(name, value)
+
+        AddJson(obj)
+        return obj
+
+def UpdateSession():
     for obj in current_objects:
         if isinstance(obj, Session):
             obj.json_list = current_json
@@ -166,48 +241,31 @@ def updateSession():
         else:
             continue
 
-def initializeSession(token):
+def InitializeSession(token):
     
-    _count = IntegerObject("count", 0)
-
     for obj in current_objects:
         if isinstance(obj, Session):
             return
         else:
             continue
     
-    startSession(token)
+    StartSession(token)
 
-def startSession(token):
+def GetJson():
+
+    return current_json
+
+
+def StartSession(token):
     current_objects.append(Session(token, current_item, current_json))
 
     
 # / Init \
 
 def init():
-    initializeSession("VmYq3t6w9z$C&F)J@McQfTjWnZr4u7x!")
+    pass
 
-    # a = StringObject("a", "hey")
-    # b = StringObject("b", "fsdhu")
-    # c = StringObject("c", "543")
-    # d = StringObject("d", "dsa")
 
-    # AddJson(a)
-    # AddJson(b)
-    # AddJson(c)
-    # AddJson(d)
-
-    # AddJsonToSession(current_json[0])
-    # AddJsonToSession(current_json[1])
-    # AddJsonToSession(current_json[2])
-    # AddJsonToSession(current_json[3])
-
-    # current_json.pop(0)
-    # current_json.pop(1)
-    # current_json.pop(2)
-    # current_json.pop(3)
-
-    # print(current_json)
 
 if __name__ == "__main__":
     init()
