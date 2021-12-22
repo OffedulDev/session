@@ -1,20 +1,15 @@
-from objectmanager import (CreateObject, 
-GetObject, DeleteObject, InitializeSession, 
-GetJson, PrintContentOnFile, UpdateSession)
+<h1> Session Manager | Flask </h1>
+<h3> Last Update: 12/22/2021, 22:32 PM GMT+1</h3>
 
-import json  
-
-def init():
-	InitializeSession("b43783985vb478bperosbvy47vn7etsjrnvte4bg7t9e9")
-
-	CreateObject("nome", "pina", str)
-	CreateObject("ladra", "grazia", str)
-	CreateObject("poliziotto", "filippo", str)
-	CreateObject("attore", "andrea", str)
-	CreateObject("gestore", "marco", str)
-	CreateObject("direttori", ["claudio", "sandro", "cagliari"], list)
-	CreateObject("soldi", 34, int)
-	CreateObject("gemme", 2, int)
-	UpdateSession()
-
-	PrintContentOnFile("test")
+<h5> Session is a Session Managment Plugin to improve your Session Managment in Flask, to set it up
+ you just have to initialize it with a token and assign it to the default session object in flask, here's
+ an example: </h5>
+ 
+> import objectmanager
+> from flask import Flask, session
+> 
+> app = Flask(__name__)
+>
+> @app.route("/")
+> def init():
+> 	objectmanager.InitializeSession("your token goes here")
