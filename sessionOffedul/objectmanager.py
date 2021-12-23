@@ -5,9 +5,9 @@
 # 2 - Questo file contiene tutte le funzione per l'object managing.
 # 
 # TO-DO:
-# - 
-# -
-# -
+# . UpdateSession messo in tutte le funzioni che editano le liste current_json e current_item 
+# . Terminate Session
+# . 
 # -
 # -
 #
@@ -15,7 +15,6 @@
 
 import json
 from typing import List, Tuple
-
 current_json = []
 current_item = []
 current_objects = []
@@ -157,18 +156,28 @@ def AddJson(object):
     jsonObject = json.dumps(formattedObject)
     current_json.append(jsonObject)
     current_item.append(formattedObject["name"])
+    UpdateSession()
 
 def GetObject(name):
 
-    for obj in current_json:
+    session_json = None
 
-        formattedObject = json.loads(obj)
-
-        if formattedObject['name'] == name:
-            return formattedObject['value']
+    for obj in current_objects:
+        if isinstance(obj, Session):
+            session_json = obj.json_list
         else:
-            del formattedObject
             continue
+    try:
+        for obj in session_json:
+            formattedObject = json.loads(obj)
+
+            if formattedObject['name'] == name:
+                return formattedObject['value']
+            else:
+                del formattedObject
+                continue
+    except:
+        return "Object didn't found in current context. Maybe you forgot to update the session?"
 
     return "Object didn't found in current context."
 
@@ -189,7 +198,8 @@ def DeleteObject(name):
             current_item.pop(current_item.index(formattedObject['name']))
             current_json.pop(current_json.index(obj))
 
-            return current_json
+            UpdateSession()
+            return True
         else:
             del formattedObject
             continue
@@ -218,27 +228,27 @@ def CreateObject(name, value, _type):
         obj = IntegerObject(name, value)
 
         AddJson(obj)
-        return obj
+        return True
     elif _type == str:
         obj = StringObject(name, value)
 
         AddJson(obj)
-        return obj
+        return True
     elif _type == tuple:
         obj = TupleObject(name, value)
 
         AddJson(obj)
-        return obj
+        return True
     elif _type == list:
         obj = ListObject(name, value)
 
         AddJson(obj)
-        return obj
+        return True
     else:
         obj = UnknownObject(name, value)
 
         AddJson(obj)
-        return obj
+        return True
 
 def UpdateSession():
     for obj in current_objects:
@@ -258,9 +268,38 @@ def InitializeSession(token):
     
     StartSession(token)
 
+    return token
+
 def GetJson():
 
     return current_json
+
+def TerminateSession(token):
+
+    sessionToken = None  
+
+    for i in current_objects:
+        if isinstance(i, Session):
+            sessionToken = (i.secret_token).decode("utf-32")
+
+    if not token == sessionToken: return "Token didn't match the active session identifier. " + str(sessionToken)
+
+    # deletes items from current_json and current_item
+
+    for i in current_item:
+        DeleteObject(str(i))
+
+
+    # deletes session
+
+    for i in current_objects:
+        if isinstance(i, Session):
+            current_objects.pop(current_objects.index(i))
+
+    # returns a message 
+
+    return "Session with " + str(sessionToken) + " identifier was succeffuly terminated."
+
 
 
 def StartSession(token):
